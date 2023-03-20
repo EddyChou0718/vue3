@@ -6,35 +6,22 @@
     :color="isNew ? 'green' : 'primary'"
     @click="toggleDialog(true)"
   >
-    <template v-if="isNew">
-      Add
-    </template>
-    <v-icon :icon="isNew ? 'mdi-plus' : 'mdi-pencil'"/>
+    <template v-if="isNew"> Add </template>
+    <v-icon :icon="isNew ? 'mdi-plus' : 'mdi-pencil'" />
   </v-btn>
 
-  <v-dialog
-    v-model="open"
-    width="auto"
-  >
+  <v-dialog v-model="open" width="auto">
     <v-card>
-      <v-card-title>{{props.isNew ? 'New' : 'Edit' }}</v-card-title>
+      <v-card-title>{{ props.isNew ? 'New' : 'Edit' }}</v-card-title>
       <v-divider></v-divider>
       <v-card-text>
         <v-text-field
           v-model="entry.username"
           :error="nameError"
-          @update:modelValue="(val) =>handleVerify(val)"
+          @update:modelValue="(val) => handleVerify(val)"
         />
-        <v-switch
-          color="primary"
-          v-model="entry.locked"
-          label="Locked"
-        />
-        <v-switch
-          color="primary"
-          v-model="entry.enable"
-          label="Enable"
-        />
+        <v-switch color="primary" v-model="entry.locked" label="Locked" />
+        <v-switch color="primary" v-model="entry.enable" label="Enable" />
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
@@ -51,10 +38,10 @@ import { ref, reactive, onUpdated } from 'vue';
 import request from '../utils/request';
 
 const props = defineProps({
-    entry: Object,
-    getData: Function,
-    isNew: Boolean,
-})
+  entry: Object,
+  getData: Function,
+  isNew: Boolean,
+});
 
 const open = ref(false);
 const nameError = ref(false);
@@ -71,11 +58,11 @@ function handleVerify(val) {
 
 function toggleDialog(val) {
   open.value = val;
-};
+}
 
 async function submitEdit() {
   if (nameError.value) {
-    return
+    return;
   }
 
   const payload = {
@@ -91,7 +78,7 @@ async function submitEdit() {
 
   if (out?.result === 'ok') {
     props.getData();
-    toggleDialog(false)
+    toggleDialog(false);
   }
 }
 
@@ -99,11 +86,10 @@ onUpdated(() => {
   if (open.value && props.entry) {
     const { id, username, locked, enable } = props.entry;
 
-    entry.id = id,
-    entry.username = username,
-    entry.locked = locked,
-    entry.enable = enable
+    entry.id = id;
+    entry.username = username;
+    entry.locked = locked;
+    entry.enable = enable;
   }
-})
-
+});
 </script>

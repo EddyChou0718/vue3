@@ -2,6 +2,14 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer">
       <!--  -->
+      <v-list>
+        <v-list-item>
+          <RouterLink to="/">View1</RouterLink>
+        </v-list-item>
+        <v-list-item>
+          <RouterLink to="/view2">View2</RouterLink>
+        </v-list-item>
+      </v-list>
     </v-navigation-drawer>
 
     <v-app-bar>
@@ -13,71 +21,22 @@
     </v-app-bar>
 
     <v-main>
-      <v-table>
-        <thead>
-          <tr>
-            <th>
-              ID
-            </th>
-            <th>
-              Username
-            </th>
-            <th>
-              Locked
-            </th>
-            <th>
-              Enable
-            </th>
-            <th>
-              Operate
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in dataTable.data"
-            :key="item.id"
-          >
-            <td>{{ item.id }}</td>
-            <td>{{ item.username }}</td>
-            <td>
-              <v-icon
-                :color="item.locked ? 'red' : 'green'"
-                :icon="item.locked ? 'mdi-lock' : 'mdi-lock-open'" />
-            </td>
-            <td>
-              <v-icon
-                :color="item.enable ? 'green' : 'red'"
-                :icon="item.enable ? 'mdi-check' : 'mdi-cancel'" />
-            </td>
-            <td>
-              <EditDialog :isNew="false" :entry="item" :getData="getData" />
-              <DeleteDialog :entry="item" :getData="getData" />
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-      <CustomPagination
-        :pagination="dataTable.pagination"
-        :onPageChanged="getData"
-      />
+      <RouterView />
     </v-main>
   </v-app>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
+import { RouterView } from 'vue-router';
 import request from './utils/request';
 import EditDialog from './components/EditDialog.vue';
-import DeleteDialog from './components/DeleteDialog.vue';
-import CustomPagination from './components/CustomPagination.vue';
 
 const drawer = ref(true);
 const dataTable = reactive({
   pagination: {},
-  data: []
+  data: [],
 });
-
 
 function toggleNav() {
   drawer.value = !drawer.value;
@@ -87,8 +46,8 @@ async function getData({ page = null } = {}) {
   const payload = {};
 
   if (page) {
-    payload.first_result = page.first_result
-    payload.max_results = page.max_results
+    payload.first_result = page.first_result;
+    payload.max_results = page.max_results;
   }
 
   const out = await request('GET', '/users', payload);
@@ -96,17 +55,17 @@ async function getData({ page = null } = {}) {
   if (out?.result === 'ok') {
     const { pagination, ret } = out;
     dataTable.data = ret.map((i) => {
-      i.locked = Boolean(i.locked)
-      i.enable = Boolean(i.enable)
+      i.locked = Boolean(i.locked);
+      i.enable = Boolean(i.enable);
 
-      return i
+      return i;
     });
 
-    dataTable.pagination = pagination
+    dataTable.pagination = pagination;
   }
 }
 
 onMounted(() => {
-  getData()
-})
+  getData();
+});
 </script>
