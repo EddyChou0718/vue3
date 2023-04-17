@@ -2,12 +2,12 @@
 
 ## API
 
-``sh
+``
 node index.js
 ``
 
 ## UI
 
-``sh
+``
 npm run dev
 ``
