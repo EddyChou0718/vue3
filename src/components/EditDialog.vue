@@ -83,8 +83,10 @@ async function submitEdit() {
 }
 
 onUpdated(() => {
-  if (open.value && props.entry) {
-    const { id, username, locked, enable } = props.entry;
+  const { value, entry: propsEntry } = props;
+
+  if (value && propsEntry) {
+    const { id, username, locked, enable } = propsEntry;
 
     entry.id = id;
     entry.username = username;

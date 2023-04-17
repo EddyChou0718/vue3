@@ -18,13 +18,13 @@ const request = async (method, api, body = null) => {
       'Content-type': 'application/json',
     },
     method,
-  }
+  };
 
   if (method !== 'GET' && body) {
     payload.body = JSON.stringify(body);
   }
 
   return fetch(url, payload).then((res) => res.json());
-}
+};
 
 export default request;
