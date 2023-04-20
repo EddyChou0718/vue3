@@ -35,20 +35,26 @@
   <CustomPagination :pagination="dataTable.pagination" :onPageChanged="getData" />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { reactive, onMounted } from 'vue';
+import type { DataType, PaginationType } from '@/types';
 import request from '../utils/request';
 import EditDialog from '../components/EditDialog.vue';
 import DeleteDialog from '../components/DeleteDialog.vue';
 import CustomPagination from '../components/CustomPagination.vue';
 
 const dataTable = reactive({
-  pagination: {},
-  data: [],
+  pagination: {} as PaginationType,
+  data: [] as DataType[],
 });
 
-async function getData({ page = null } = {}) {
-  const payload = {};
+type GetDataPayload = {
+  first_result?: number,
+  max_results?: number,
+};
+
+async function getData(page: GetDataPayload | null = null) {
+  const payload: GetDataPayload = {};
 
   if (page) {
     payload.first_result = page.first_result;
@@ -58,13 +64,17 @@ async function getData({ page = null } = {}) {
   const out = await request('GET', '/users', payload);
 
   if (out?.result === 'ok') {
-    const { pagination, ret } = out;
+    const { pagination, ret }: { pagination: PaginationType, ret: DataType[] } = out;
 
     dataTable.data = ret.map((i) => {
-      i.locked = Boolean(i.locked);
-      i.enable = Boolean(i.enable);
+      const data = {
+        id: i.id,
+        username: i.username,
+        locked: Boolean(i.locked),
+        enable: Boolean(i.enable),
+      };
 
-      return i;
+      return data;
     });
 
     dataTable.pagination = pagination;

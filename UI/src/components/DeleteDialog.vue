@@ -1,5 +1,12 @@
 <template>
-  <v-btn class="ma-2" color="red" icon="mdi-delete" size="small" @click="toggleDialog(true)" />
+  <v-btn
+    class="ma-2"
+    color="red"
+    icon="mdi-delete"
+    size="small"
+    @click="toggleDialog(true)"
+  />
+
   <v-dialog v-model="open" width="auto">
     <v-card>
       <v-card-title>Delete</v-card-title>
@@ -7,7 +14,7 @@
       <v-card-text>Delete {{ props.entry.username }}?</v-card-text>
       <v-divider />
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn variant="outlined" color="red" @click="submitDelete">OK</v-btn>
         <v-btn variant="outlined" color="gray" @click="toggleDialog(false)">Cancel</v-btn>
       </v-card-actions>
@@ -15,18 +22,24 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import request from '../utils/request';
 
 const props = defineProps({
-  entry: Object,
-  getData: Function,
+  entry: {
+    type: Object,
+    default: () => ({}),
+  },
+  getData: {
+    type: Function,
+    default: () => {},
+  },
 });
 
-const open = ref(false);
+const open = ref<boolean>(false);
 
-function toggleDialog(val) {
+function toggleDialog(val: boolean) {
   open.value = val;
 }
 

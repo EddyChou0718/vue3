@@ -23,12 +23,20 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { PaginationType } from '@/types';
 import { onUpdated, ref, reactive } from 'vue';
+import type { PropType } from 'vue';
 
 const props = defineProps({
-  pagination: Object,
-  onPageChanged: Function,
+  pagination: {
+    type: Object as PropType<PaginationType>,
+    default: () => ({}),
+  },
+  onPageChanged: {
+    type: Function,
+    default: () => {},
+  },
 });
 
 const page = reactive({
@@ -40,21 +48,17 @@ const page = reactive({
 const length = ref(1);
 const pageNumber = ref(1);
 
-function handleMax(value) {
+function handleMax(value: number) {
   props.onPageChanged({
-    page: {
-      first_result: 0,
-      max_results: value,
-    },
+    first_result: 0,
+    max_results: value,
   });
 }
 
-function handlePageNumber(value) {
+function handlePageNumber(value: number) {
   props.onPageChanged({
-    page: {
-      first_result: page.max * (value - 1),
-      max_results: page.max,
-    },
+    first_result: page.max * (value - 1),
+    max_results: page.max,
   });
 }
 
@@ -62,9 +66,9 @@ onUpdated(() => {
   const { pagination } = props;
   let { first, max, total } = page;
 
-  first = Number.parseInt(pagination.first_result, 10) || 0;
-  max = Number.parseInt(pagination.max_results, 10) || 20;
-  total = Number.parseInt(pagination.total, 10) || 0;
+  first = pagination.first_result || 0;
+  max = pagination.max_results || 20;
+  total = pagination.total || 0;
 
   length.value = Math.ceil(total / max);
   pageNumber.value = Math.floor(first / max) + 1;

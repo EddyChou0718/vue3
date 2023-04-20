@@ -6,16 +6,12 @@ module.exports = {
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
-    '@vue/eslint-config-prettier/skip-formatting',
-    'prettier',
-    'airbnb-base',
+    '@vue/eslint-config-airbnb-with-typescript',
   ],
-  plugins: ['prettier'],
   parserOptions: {
     ecmaVersion: 'latest',
   },
   rules: {
-    'prettier/prettier': ['error'],
     'object-curly-newline': [
       'error',
       {

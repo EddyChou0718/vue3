@@ -1,19 +1,25 @@
+type Payload = {
+  headers: Record<string, any>,
+  method: string,
+  body?: any,
+};
+
 /**
  * api request
  *
- * @param {string} method method
- * @param {string} api api url
- * @param {object} body body
- * @returns {Promise} Promise
+ * @param method method
+ * @param api api url
+ * @param body body
+ * @returns Promise
  */
-const request = async (method, api, body = null) => {
+const request = async (method: string, api: string, body: any = null): Promise<any> => {
   let url = `http://localhost:9989/api${api}`;
 
   if (method === 'GET' && body) {
     url += `?${new URLSearchParams(body)}`;
   }
 
-  const payload = {
+  const payload: Payload = {
     headers: {
       'Content-type': 'application/json',
     },

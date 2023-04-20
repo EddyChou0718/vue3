@@ -13,7 +13,7 @@
   <v-dialog v-model="open" width="auto">
     <v-card>
       <v-card-title>{{ props.isNew ? 'New' : 'Edit' }}</v-card-title>
-      <v-divider></v-divider>
+      <v-divider />
       <v-card-text>
         <v-text-field
           v-model="entry.username"
@@ -23,9 +23,9 @@
         <v-switch color="primary" v-model="entry.locked" label="Locked" />
         <v-switch color="primary" v-model="entry.enable" label="Enable" />
       </v-card-text>
-      <v-divider></v-divider>
+      <v-divider />
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn variant="outlined" color="green" @click="submitEdit">Submit</v-btn>
         <v-btn variant="outlined" color="red" @click="toggleDialog(false)">Cancel</v-btn>
       </v-card-actions>
@@ -33,18 +33,32 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, onUpdated } from 'vue';
 import request from '../utils/request';
 
 const props = defineProps({
-  entry: Object,
-  getData: Function,
-  isNew: Boolean,
+  entry: {
+    type: Object,
+    default: () => ({
+      id: '',
+      username: '',
+      locked: false,
+      enable: false,
+    }),
+  },
+  getData: {
+    type: Function,
+    default: () => {},
+  },
+  isNew: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const open = ref(false);
-const nameError = ref(false);
+const open = ref<boolean>(false);
+const nameError = ref<boolean>(false);
 const entry = reactive({
   id: '',
   username: '',
@@ -52,11 +66,11 @@ const entry = reactive({
   enable: false,
 });
 
-function handleVerify(val) {
-  nameError.value = !val;
+function handleVerify(val: string) {
+  nameError.value = !!val;
 }
 
-function toggleDialog(val) {
+function toggleDialog(val: boolean) {
   open.value = val;
 }
 
@@ -83,9 +97,9 @@ async function submitEdit() {
 }
 
 onUpdated(() => {
-  const { value, entry: propsEntry } = props;
+  const { entry: propsEntry } = props;
 
-  if (value && propsEntry) {
+  if (propsEntry) {
     const { id, username, locked, enable } = propsEntry;
 
     entry.id = id;

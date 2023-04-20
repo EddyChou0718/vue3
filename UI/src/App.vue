@@ -1,7 +1,6 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer">
-      <!--  -->
       <v-list>
         <v-list-item>
           <RouterLink to="/">View1</RouterLink>
@@ -13,8 +12,7 @@
     </v-navigation-drawer>
 
     <v-app-bar>
-      <v-app-bar-nav-icon @click="toggleNav"></v-app-bar-nav-icon>
-
+      <v-app-bar-nav-icon @click="toggleNav" />
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer />
       <EditDialog :isNew="true" :getData="getData" />
@@ -26,24 +24,25 @@
   </v-app>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
+import type { DataType, PaginationType } from '@/types';
 import { RouterView } from 'vue-router';
 import request from './utils/request';
 import EditDialog from './components/EditDialog.vue';
 
 const drawer = ref(true);
 const dataTable = reactive({
-  pagination: {},
-  data: [],
+  pagination: {} as PaginationType,
+  data: [] as DataType[],
 });
 
 function toggleNav() {
   drawer.value = !drawer.value;
 }
 
-async function getData({ page = null } = {}) {
-  const payload = {};
+async function getData(page: PaginationType | null = null): Promise<void> {
+  const payload: PaginationType = {};
 
   if (page) {
     payload.first_result = page.first_result;
@@ -53,12 +52,17 @@ async function getData({ page = null } = {}) {
   const out = await request('GET', '/users', payload);
 
   if (out?.result === 'ok') {
-    const { pagination, ret } = out;
-    dataTable.data = ret.map((i) => {
-      i.locked = Boolean(i.locked);
-      i.enable = Boolean(i.enable);
+    const { pagination, ret }: { pagination: PaginationType, ret: DataType[] } = out;
 
-      return i;
+    dataTable.data = ret.map((i) => {
+      const data = {
+        id: i.id,
+        username: i.username,
+        locked: Boolean(i.locked),
+        enable: Boolean(i.enable),
+      };
+
+      return data;
     });
 
     dataTable.pagination = pagination;
