@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onUpdated } from 'vue';
+import { ref, reactive, onUpdated, toRefs } from 'vue';
 import request from '../utils/request';
 
 const props = defineProps({
@@ -97,10 +97,10 @@ async function submitEdit() {
 }
 
 onUpdated(() => {
-  const { entry: propsEntry } = props;
+  const { entry: propsEntry } = toRefs(props);
 
-  if (propsEntry) {
-    const { id, username, locked, enable } = propsEntry;
+  if (propsEntry.value) {
+    const { id, username, locked, enable } = propsEntry.value;
 
     entry.id = id;
     entry.username = username;

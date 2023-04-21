@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import type { PaginationType } from '@/types';
-import { onUpdated, ref, reactive } from 'vue';
+import { onUpdated, ref, reactive, toRefs } from 'vue';
 import type { PropType } from 'vue';
 
 const props = defineProps({
@@ -63,12 +63,12 @@ function handlePageNumber(value: number) {
 }
 
 onUpdated(() => {
-  const { pagination } = props;
+  const { pagination } = toRefs(props);
   let { first, max, total } = page;
 
-  first = pagination.first_result || 0;
-  max = pagination.max_results || 20;
-  total = pagination.total || 0;
+  first = pagination.value.first_result || 0;
+  max = pagination.value.max_results || 20;
+  total = pagination.value.total || 0;
 
   length.value = Math.ceil(total / max);
   pageNumber.value = Math.floor(first / max) + 1;
